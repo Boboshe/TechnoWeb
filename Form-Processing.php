@@ -32,15 +32,15 @@ echo "S&eacutev&eacuterite : {$severite} <br /><br />";
 echo "R&eacutef&eacuterence : ";
 
 if (isset($_POST['check_web'])) {
-    echo "[check_web]: ".$_POST['check_web'];
+    echo "[check_web]: ".$_POST['check_web']." ";
     $reference[0]=$_POST['check_web'];
 }
 if (isset($_POST['check_email'])){
-    echo "[check_email]: ".$_POST['check_email'];
+    echo "[check_email]: ".$_POST['check_email']." ";
     $reference[1]=$_POST['check_email'];
 }
 if (isset($_POST['check_tel'])){
-    echo "[check_tel]: ".$_POST['check_tel'];
+    echo "[check_tel]: ".$_POST['check_tel']." ";
     $reference[2]=$_POST['check_tel']; 
 }
 echo "<br />";
@@ -55,20 +55,43 @@ echo "<h2>PHOTO</h2>";
 echo "<img src={$sImage} alt=Image/>";
 */
 
-//Déplacement
-echo serialize($_POST)."<br />";
-echo serialize($_FILES)."<br />";
+
+//echo serialize($_POST)."<br />";
+//echo serialize($_FILES)."<br />";
 //echo serialize($HTTP_POST_FILES)."<br />";
 
-    if(!empty($_FILES['photo'])){
-        $filenamme = $_FILES['photo']['name'];
+//Déplacement de l'image temporaire récupérée sur le serveur dans le chemin de destination: $dest saisie
+$dest = "./img/".$_FILES['photo']['name'];
+if(!empty($_FILES['photo'])){
+  $filenamme = $_FILES['photo']['name'];
 
-        if(@copy($_FILES['photo']['tmp_name'],$destination)){
-            echo "Success";
-        } else {
-            echo "Failed";
-        }
-    }
+  if(@copy($_FILES['photo']['tmp_name'],$dest)){
+    //copie de l'image temporaire
+    echo "[Success] copy image <br />";
+  } else {
+    echo "[Failed] copy image <br />";
+  }
+}
+
+
+//EXEMPLES
+$upload1 = upload('photo',$dest,1048576, array('png','gif','jpg','jpeg') );
+
+if ($upload1){
+  //echo "Upload de l'icone r&eacuteussi!<br />";
+  //echo "filename : {$filenamme} <br/>"; //OK => imgtest.png 
+  //echo "dest : {$dest} <br/>"; //OK => ./img/imgtest.png 
+
+  /*Les 2 types de notations
+    Grâce à Mathieu pour vérifier, il suffit de faire, 
+    "code source de la page", pour voir si les variables entre {} ont bien été évaluée ou pas xD
+  */
+  echo '<img src="'.$dest.'"alt="Image" height="100" width="100"><br/>';
+  //echo "<img src=\"{$dest}\" alt=\"Image\" height=\"100\" width=\"100\"><br/>";
+
+} else {
+  echo " Echec du upload<br />";
+}
 
 /* UPLOAD - OpenClassroom */
 function upload($index,$destination,$maxsize=FALSE,$extensions=FALSE)
@@ -98,10 +121,7 @@ function upload($index,$destination,$maxsize=FALSE,$extensions=FALSE)
      return move_uploaded_file($_FILES[$index]['tmp_name'],$destination);
 
 }
-//EXEMPLES
-$upload1 = upload('photo',"img/".$_FILES['photo']['name'],1048576, array('png','gif','jpg','jpeg') );
-if ($upload1) echo "Upload de l'icone réussi!<br />";
-else echo " Echec du upload<br />";
+
 /*
 
   $upload1 = upload('icone','uploads/monicone1',15360, array('png','gif','jpg','jpeg') );
