@@ -22,7 +22,7 @@ class Connection
 
     public function closeConnection() {
         $db = null;
-        echo 'Discoonnected from database';
+        echo 'Disconnected from database';
     }
 
     public function insertIntoIncident(Incident $tableau)
